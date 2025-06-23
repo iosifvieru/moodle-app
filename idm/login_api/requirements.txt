@@ -1,0 +1,8 @@
+fastapi
+pydantic
+uvicorn
+peewee
+mysqlclient
+python-dotenv
+grpcio
+grpcio-tools

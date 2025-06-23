@@ -1,0 +1,11 @@
+10.5.0.10 -> academia-db
+10.5.0.2 -> academia-service
+
+10.5.0.3 -> idm service
+10.5.0.4 -> idm database
+10.5.0.5 -> redis
+
+10.5.0.6 -> login api
+
+10.5.0.7 -> materials 
+10.5.0.8 -> materials mongodb

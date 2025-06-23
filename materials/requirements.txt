@@ -1,0 +1,12 @@
+fastapi
+pydantic
+uvicorn
+peewee
+requests
+pymongo
+python-dotenv
+grpcio
+grpcio-tools
+pyjwt
+python-multipart
+uuid

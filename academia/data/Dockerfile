@@ -1,0 +1,8 @@
+FROM mariadb:latest
+
+ENV MYSQL_ROOT_PASSWORD=password
+ENV MYSQL_DATABASE=academia_database
+ENV MYSQL_USER=root
+ENV MYSQL_PASSWORD=password
+
+EXPOSE 3306

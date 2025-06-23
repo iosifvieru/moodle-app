@@ -1,0 +1,145 @@
+services:
+  academia-service:
+    build: 
+      context: ./academia
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      academia-network:
+        ipv4_address: 10.5.0.2
+    tmpfs:
+      - /tmp
+    depends_on:
+      academia-db:
+        condition: service_healthy
+    restart: on-failure
+
+  academia-db:
+    build:
+      context: ./academia/data
+      dockerfile: Dockerfile
+    ports:
+      - "3306:3306"
+    networks:
+      academia-network:
+        ipv4_address: 10.5.0.10
+    healthcheck:
+      test: ["CMD", "ls"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    restart: on-failure
+    volumes:
+      - db_data:/var/lib/mysql
+
+  idm-service:
+    build:
+      context: ./idm
+      dockerfile: Dockerfile
+    networks:
+      academia-network:
+        ipv4_address: 10.5.0.3
+    depends_on:
+      idm-database:
+        condition: service_healthy
+      idm-redis:
+        condition: service_healthy
+    restart: on-failure
+    environment:
+      - PYTHONUNBUFFERED=1 # NU aveam output pe stdout fara acest lucru !!!! XDDDDDDDDDDDDDDDDDDDDDDD
+
+  idm-database:
+    build:
+      context: ./idm/data
+      dockerfile: Dockerfile
+    networks:
+      academia-network:
+        ipv4_address: 10.5.0.4
+    ports:
+      - "3307:3306"
+    restart: on-failure
+
+    healthcheck:
+      test: ["CMD", "ls"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - idm_db_data:/var/lib/mysql
+
+  idm-redis:
+    build:
+      context: ./idm/redis
+      dockerfile: Dockerfile
+    networks:
+      academia-network:
+        ipv4_address: 10.5.0.5
+    ports:
+      - "6379:6379"
+    volumes:
+      - idm_redis:/data
+    healthcheck:
+      test: ["CMD", "ls"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+  
+  login-api:
+    build:
+      context: ./idm/login_api
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8000"
+    networks:
+      academia-network:
+        ipv4_address: 10.5.0.6
+
+  materials:
+    build:
+      context: ./materials/
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8000"
+    networks:
+      academia-network:
+        ipv4_address: 10.5.0.7
+    depends_on:
+        materials-mongodb:
+          condition: service_healthy
+    restart: on-failure
+        
+  materials-mongodb:
+    build:
+      context: ./materials/mongodb/
+      dockerfile: Dockerfile
+    ports:
+      - "27017:27017"
+    networks:
+      academia-network:
+        ipv4_address: 10.5.0.8
+    volumes:
+      - mongodb:/data
+    healthcheck:
+      test: ["CMD", "ls"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+networks:
+  academia-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
+
+volumes:
+  db_data:
+  idm_db_data:
+  idm_redis:
+  mongodb:

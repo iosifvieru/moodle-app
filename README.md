@@ -12,14 +12,9 @@ This project is a Moodle web application designed using web services.
 2. Materials - stores lecture content / materials in a MongoDB container.
 3. IDM - authentication service implemented with gRPC and Redis for blacklisting JWT's. 
 ## Technologies
-React
-
-FastAPI - RESTful services
-
-gRPC
-
-MariaDB, MongoDB
-
-Docker, Docker-Compose
-
-Redis
+- React
+- FastAPI - RESTful services
+- gRPC
+- MariaDB, MongoDB
+- Docker, Docker-Compose
+- Redis
